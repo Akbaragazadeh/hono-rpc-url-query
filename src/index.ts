@@ -1,9 +1,14 @@
-import { Hono } from 'hono'
+import { vValidator } from "@hono/valibot-validator";
+import { Hono } from "hono";
+import * as v from "valibot";
 
-const app = new Hono()
+const app = new Hono();
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+app.get("/", vValidator("query", v.object({ name: v.string() })), (c) => {
+	const { name } = c.req.valid("query");
+	return c.text(`Hello ${name}!`);
+});
 
-export default app
+export type AppType = typeof app;
+
+export default app;
